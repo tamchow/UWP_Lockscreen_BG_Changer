@@ -1,0 +1,1 @@
+D:\Programming\Projects\UWP_Lockscreen_BG_Changer\LockscreenBackgroundChanger\LockscreenBGChanger\LockscreenBGChanger\LockscreenBGChanger.csproj;x64

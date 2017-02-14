@@ -1,0 +1,2 @@
+MainPackage=D:\Programming\Projects\UWP_Lockscreen_BG_Changer\LockscreenBackgroundChanger\LockscreenBGChanger\LockscreenBGChanger\bin\x86\Release\LockscreenBGChanger_2.0.1.0_x86.appx
+SymbolPackage=D:\Programming\Projects\UWP_Lockscreen_BG_Changer\LockscreenBackgroundChanger\LockscreenBGChanger\LockscreenBGChanger\AppPackages\LockscreenBGChanger_2.0.1.0_Test\LockscreenBGChanger_2.0.1.0_x86.appxsym
