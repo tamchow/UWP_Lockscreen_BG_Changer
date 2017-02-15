@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
@@ -14,7 +17,7 @@ namespace LockscreenBGChanger
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.
     /// </summary>
-    sealed partial class App : Application
+    sealed partial class App
     {
         private Frame _rootFrame;
         /// <summary>
@@ -77,8 +80,19 @@ namespace LockscreenBGChanger
             if (pEArgs == null) return;
             Window.Current.Activate();
             var uri = pEArgs.Uri.ToString();
-            var success = await SetWallpaperAsync(uri.Substring(uri.IndexOf(':')+1));
-            ShowMessage(success?"Image set":"Image not set", true);
+            var argument = uri.Substring(uri.IndexOf(':') + 1);
+            if (string.IsNullOrWhiteSpace(argument))
+            {
+                await StoreWallpaperAsync();
+                Current.Exit();
+                //ShowMessage("Lockscreen wallpaper retrieved", true);
+            }
+            else
+            {
+                var success = await SetWallpaperAsync(argument);
+                Current.Exit();
+                //ShowMessage(success ? "Image set" : "Image not set", true);
+            }
         }
 
         private const string Acknowledgement = "OK";
@@ -112,12 +126,42 @@ namespace LockscreenBGChanger
             var file = await ApplicationData.Current.LocalFolder.GetFileAsync(newFileName);
             if (!await profileSettings.TrySetLockScreenImageAsync(file)) return false;
             await source.RenameAsync($"{source.Name}{CompletedExtension}");
-#if DEBUG
-            Debug.WriteLine($"Set wallpaper: {success}");
-#endif
+            return true;
+        }
+        static async Task<bool> StoreWallpaperAsync()
+        {
+            if (!UserProfilePersonalizationSettings.IsSupported()) return false;
+            
+            using (var source = LockScreen.GetImageStream().AsStreamForRead())
+            {
+                string fileExtension;
+                try
+                {
+                    fileExtension = Path.GetExtension(LockScreen.OriginalImageFile.LocalPath);
+                }
+                catch (Exception)
+                {
+                    fileExtension = DefaultFileExtension;
+                }
+                if (string.IsNullOrWhiteSpace(fileExtension))
+                {
+                    fileExtension = DefaultFileExtension;
+                }
+                var picturesLibrary = await StorageLibrary.GetLibraryAsync(KnownLibraryId.Pictures);
+                var folders = picturesLibrary.Folders.Select(folder => folder.Path).ToList();
+                var destinationFolders = folders.Where(folder => folder.StartsWith("C")).ToList();
+                var destinationFolder = await StorageFolder.GetFolderFromPathAsync(!destinationFolders.Any() ? destinationFolders.First() : folders.First());
+                var destinationFile = await destinationFolder.CreateFileAsync($"{ResultImageName}{fileExtension}{CompletedExtension}", CreationCollisionOption.ReplaceExisting);
+                using (var writeStream = await destinationFile.OpenStreamForWriteAsync())
+                {
+                    await source.CopyToAsync(writeStream);
+                }
+            }
             return true;
         }
 
+        private const string DefaultFileExtension = ".jpg";
+        private const string ResultImageName = "lockscreen_bg";
         private const string CompletedExtension = ".done";
         /// <summary>
         /// Invoked when Navigation to a certain page fails

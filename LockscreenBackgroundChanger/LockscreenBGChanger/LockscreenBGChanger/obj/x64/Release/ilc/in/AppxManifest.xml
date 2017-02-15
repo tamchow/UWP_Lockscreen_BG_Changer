@@ -7,7 +7,7 @@
 
     For more information on package manifest files, see http://go.microsoft.com/fwlink/?LinkID=241727
   -->
-  <Identity Name="d98b8f9b-266d-4b65-8100-f0df07cce3cd" Publisher="CN=Tamoghna Chowdhury" Version="2.0.2.0" ProcessorArchitecture="x64" />
+  <Identity Name="d98b8f9b-266d-4b65-8100-f0df07cce3cd" Publisher="CN=Tamoghna Chowdhury" Version="3.0.2.0" ProcessorArchitecture="x64" />
   <mp:PhoneIdentity PhoneProductId="d98b8f9b-266d-4b65-8100-f0df07cce3cd" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>LockscreenBGChanger</DisplayName>
@@ -55,6 +55,7 @@
     <build:Item Name="UseDotNetNativeSharedAssemblyFrameworkPackage" Value="True" />
     <build:Item Name="UniversalGenericsOptOut" Value="false" />
     <build:Item Name="Microsoft.Windows.UI.Xaml.Build.Tasks.dll" Version="14.0.25527.1" />
+    <build:Item Name="WindowsDesktop" Version="10.0.14393.0" />
     <build:Item Name="MakePri.exe" Version="10.0.14393.33 (rs1_release_sec.160727-1952)" />
   </build:Metadata>
 </Package>
